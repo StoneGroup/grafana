@@ -42,6 +42,7 @@ func NewReverseProxy(ds *m.DataSource, proxyPath string, targetUrl *url.URL) *ht
 			req.URL.RawQuery = reqQueryVals.Encode()
 		} else if ds.Type == m.DS_INFLUXDB {
 			req.URL.Path = util.JoinUrlFragments(targetUrl.Path, proxyPath)
+            reqQueryVals.Set("q", util.AdjustSqlTimeRange(reqQueryVals.Get("q")))
 			req.URL.RawQuery = reqQueryVals.Encode()
 			if !ds.BasicAuth {
 				req.Header.Del("Authorization")
