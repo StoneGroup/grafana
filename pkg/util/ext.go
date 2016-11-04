@@ -1,7 +1,7 @@
 package util
 
 import (
-	"fmt"
+    "fmt"
     "strings"
     "regexp"
     "strconv"
@@ -12,6 +12,9 @@ func AdjustSqlTimeRange(sql string) string {
     sqls := strings.Split(sql, ";");
     l := len(sqls);
     for i := 0; i < l; i++ {
+        if strings.Index(sqls[i], "time < ") == -1 {
+            sqls[i] = strings.Replace(sqls[i], " GROUP", " AND time < now() GROUP", 1);
+        }
         re := regexp.MustCompile(`GROUP\sBY\stime\(([0-9]+)m\)`)
         if re.MatchString(sqls[i]) {
             interval, err := strconv.Atoi(re.FindStringSubmatch(sqls[i])[1])
